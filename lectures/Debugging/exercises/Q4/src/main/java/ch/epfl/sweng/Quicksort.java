@@ -24,12 +24,12 @@ public class Quicksort {
 
   // Sorts the elements in the given range.
   private static <T> void sort(T[] elements, Comparator<T> comparator, int from, int until) {
-    if (from > until) {
+    if (from >= until) { // If both index are equal then we are done with this branch
       return;
     }
     var pivot = partition(elements, comparator, from, until);
     sort(elements, comparator, from, pivot);
-    sort(elements, comparator, pivot, until);
+    sort(elements, comparator, pivot + 1, until); // The pivot is correctly placed, so take the next one as next pivot
   }
 
   // Partitions the elements in the given range around a pivot, and returns its index.
@@ -42,8 +42,9 @@ public class Quicksort {
         swap(elements, i, s);
       }
     }
+    s--;
     swap(elements, from, s);
-    return s - 1;
+    return s;
   }
 
   // Swaps the elements at the given indices.

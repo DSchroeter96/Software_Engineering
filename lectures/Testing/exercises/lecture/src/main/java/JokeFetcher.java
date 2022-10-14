@@ -15,12 +15,12 @@ import java.util.Scanner;
  * and write tests for the error cases)
  */
 public final class JokeFetcher {
-    /**
-     * Prints the joke with the specific ID to the console.
-     *
-     * @param jokeId e.g., "R7UfaahVfFd"
-     */
-    public void printJokeText(String jokeId) {
+
+    // TODO How to set up to allow to mock the service that we are gonna use ?
+
+    private HttpURLConnection connection;
+
+    public void initConnection(String jokeId) {
         URL url;
         try {
             url = new URL("https://icanhazdadjoke.com/j/" + jokeId);
@@ -34,8 +34,30 @@ public final class JokeFetcher {
             System.out.println("Cannot connect to jokes server.");
             return;
         }
-        connection.setRequestProperty("Accept", "text/plain");
-        try (var connectionStream = connection.getInputStream();
+        this.connection = connection;
+    }
+
+    /**
+     * Prints the joke with the specific ID to the console.
+     *
+     * @param jokeId e.g., "R7UfaahVfFd"
+     */
+    public void printJokeText() {
+        //URL url;
+        //try {
+        //    url = new URL("https://icanhazdadjoke.com/j/" + jokeId);
+        //} catch (MalformedURLException e) {
+        //    throw new IllegalArgumentException("Bad URL");
+        //}
+        //HttpURLConnection connection;
+        //try {
+        //    connection = (HttpURLConnection) url.openConnection();
+        //} catch (IOException e) {
+        //    System.out.println("Cannot connect to jokes server.");
+        //    return;
+        //}
+        this.connection.setRequestProperty("Accept", "text/plain");
+        try (var connectionStream = this.connection.getInputStream();
              var s = new Scanner(connectionStream).useDelimiter("\\A")) {
             System.out.println(s.next());
         } catch (IOException e) {

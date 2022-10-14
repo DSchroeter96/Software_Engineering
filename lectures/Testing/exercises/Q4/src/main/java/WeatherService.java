@@ -3,8 +3,8 @@ import java.io.IOException;
 public class WeatherService {
     private final HttpClient httpClient;
 
-    public WeatherService() {
-        httpClient = new RealHttpClient();
+    public WeatherService(HttpClient client) {
+        httpClient = client;
     }
 
     public Weather getWeatherToday() {

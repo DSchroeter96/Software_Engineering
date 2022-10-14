@@ -13,6 +13,8 @@ public class App {
 
         /** Creates an empty stack with the given max size; it is forbidden to push more items than that. */
         public IntStack(int maxSize) {
+            if (maxSize < 0)
+                throw new IllegalArgumentException("The max size should be greater thatn 0");
             top = -1;
             values = new int[maxSize];
         }
@@ -26,8 +28,10 @@ public class App {
 
         /** Pushes the given value on the stack. */
         public void push(int value) {
-            values[top] = value;
             top++;
+            if (top >= values.length)
+                throw new UnsupportedOperationException("Cannot push more than the max size of the stack");
+            values[top] = value;
         }
     }
 
@@ -37,6 +41,8 @@ public class App {
 
     // IntStack usage example
     private static void useStack(IntStack stack) {
+        Objects.requireNonNull(stack, "The stack cannot be null");
+
         stack.push(1);
         stack.pop();
         stack.pop();

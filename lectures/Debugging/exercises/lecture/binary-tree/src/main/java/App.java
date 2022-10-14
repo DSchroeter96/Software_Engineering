@@ -10,15 +10,16 @@ public class App {
         public final BinaryTree left;
         public final BinaryTree right;
 
-        public BinaryTree(String v, BinaryTree l, BinaryTree r) {
+        public BinaryTree(String v, BinaryTree left, BinaryTree right) {
             value = v;
-            left = l;
-            right = l;
+            this.left = left;
+            this.right = right;
         }
 
         public static BinaryTree fromList(List<String> list) {
             int mid = list.size() / 2;
-            return new BinaryTree(list.get(mid), fromList(list.subList(0, mid-1)), fromList(list.subList(mid, list.size()-1)));
+            if (mid == 0) return null;
+            return new BinaryTree(list.get(mid), fromList(list.subList(0, mid)), fromList(list.subList(mid, list.size())));
         }
 
         public List<String> toList() {

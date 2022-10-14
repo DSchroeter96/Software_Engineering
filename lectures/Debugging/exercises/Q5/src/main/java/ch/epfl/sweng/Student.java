@@ -70,9 +70,7 @@ public class Student {
       return false;
     }
     Student student = (Student) o;
-    return id == student.id &&
-        Objects.equals(name, student.name) &&
-        Objects.equals(courses, student.courses);
+    return id == student.id;
   }
 
   /**
@@ -80,6 +78,6 @@ public class Student {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(name, id, courses);
+    return Objects.hash(id);
   }
 }

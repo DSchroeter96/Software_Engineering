@@ -38,6 +38,11 @@ public class App {
       }
     }
 
+    //TODO, the bug comes from the fact that the hash takes the courses into account
+    // as for the one that are not taking any courses this list in not changed, it doesn't matter,
+    // but for the others, the hash will change and thus they wont be found in the map anymore and thus
+    // not be removed
+
     // At the end of the day, all students leave their classrooms and go home.
     for (var student : students) {
       locations.remove(student);

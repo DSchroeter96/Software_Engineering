@@ -21,6 +21,7 @@ public final class JokeFetcher {
     private HttpURLConnection connection;
 
     public void initConnection(String jokeId) {
+
         URL url;
         try {
             url = new URL("https://icanhazdadjoke.com/j/" + jokeId);
@@ -61,7 +62,7 @@ public final class JokeFetcher {
              var s = new Scanner(connectionStream).useDelimiter("\\A")) {
             System.out.println(s.next());
         } catch (IOException e) {
-            System.out.println("Cannot fetch jokes.");
+            System.out.println("Cannot fetch joke.");
         }
     }
 }

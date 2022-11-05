@@ -1,53 +1,60 @@
+enum CurrencyType {
+  DOLLAR,
+  EURO,
+  POUND
+}
+
+interface CurrencyService {
+  double convert(CurrencyType from, CurrencyType to, double amount);
+}
+
+class CurrencyServiceImpl implements CurrencyService {
+  private static double getRate(CurrencyType from, CurrencyType to) {
+    if (from == to) return 1.0;
+    return switch (from) {
+      case EURO -> switch (to) {
+        case DOLLAR -> 1.15;
+        case POUND -> 0.88;
+        default -> throw new IllegalStateException("Unexpected value: " + to);
+      };
+      case POUND -> to == CurrencyType.DOLLAR ? 1.31 : 1/getRate(to, from);
+      case DOLLAR -> 1/getRate(to, from);
+    };
+  }
+  @Override
+  public double convert(CurrencyType from, CurrencyType to, double amount) {
+    return amount * getRate(from, to);
+  }
+}
 class BankAccount {
 
-  public enum CurrencyType {DOLLAR, EURO, POUND}
+  private static final double EUR_USD_RATE = 1.15;
+  private static final double GBP_USD_RATE = 1.31;
+  private static final double USD_EUR_RATE = 0.87;
+  private static final double GBP_EUR_RATE = 1.14;
+  private static final double USD_GBP_RATE = 0.76;
 
-  public BankAccount(CurrencyType currencyType, double amount) {
+  private static final double EUR_GBP_RATE = 0.88;
+
+  private final CurrencyType currencyType;
+  private final CurrencyService currencyService;
+  private double amount;
+
+  public BankAccount(CurrencyType currencyType, double amount, CurrencyService currencyService) {
+    this.currencyService = currencyService;
     this.currencyType = currencyType;
     this.amount = amount;
   }
 
-  private CurrencyType currencyType;
-  private double amount;
-
   public boolean add(CurrencyType addedType, double addedAmount) {
-    double inCurrency = 0;
-    if (currencyType == addedType) {
-      inCurrency = addedAmount;
-    } else if (currencyType == CurrencyType.DOLLAR && addedType == CurrencyType.EURO) {
-      inCurrency = 1.15 * addedAmount;
-    } else if (currencyType == CurrencyType.DOLLAR && addedType == CurrencyType.POUND) {
-      inCurrency = 1.31 * addedAmount;
-    } else if (currencyType == CurrencyType.EURO && addedType == CurrencyType.DOLLAR) {
-      inCurrency = 0.87 * addedAmount;
-    } else if (currencyType == CurrencyType.EURO && addedType == CurrencyType.POUND) {
-      inCurrency = 1.14 * addedAmount;
-    } else if (currencyType == CurrencyType.POUND && addedType == CurrencyType.DOLLAR) {
-      inCurrency = 0.76 * addedAmount;
-    } else if (currencyType == CurrencyType.POUND && addedType == CurrencyType.EURO) {
-      inCurrency = 0.88 * addedAmount;
-    }
-    amount += inCurrency;
+    if (addedAmount < 0)
+      return false;
+    amount += currencyService.convert(this.currencyType, addedType, addedAmount);
     return true;
   }
 
   public boolean remove(CurrencyType removedType, double removedAmount) {
-    double inCurrency = 0;
-    if (currencyType == removedType) {
-      inCurrency = removedAmount;
-    } else if (currencyType == CurrencyType.DOLLAR && removedType == CurrencyType.EURO) {
-      inCurrency = 1.15 * removedAmount;
-    } else if (currencyType == CurrencyType.DOLLAR && removedType == CurrencyType.POUND) {
-      inCurrency = 1.31 * removedAmount;
-    } else if (currencyType == CurrencyType.EURO && removedType == CurrencyType.DOLLAR) {
-      inCurrency = 0.87 * removedAmount;
-    } else if (currencyType == CurrencyType.EURO && removedType == CurrencyType.POUND) {
-      inCurrency = 1.14 * removedAmount;
-    } else if (currencyType == CurrencyType.POUND && removedType == CurrencyType.DOLLAR) {
-      inCurrency = 0.76 * removedAmount;
-    } else if (currencyType == CurrencyType.POUND && removedType == CurrencyType.EURO) {
-      inCurrency = 0.88 * removedAmount;
-    }
+    double inCurrency = this.currencyService.convert(this.currencyType, removedType, removedAmount);
     if (inCurrency > amount) {
       return false;
     }
@@ -67,9 +74,9 @@ class BankAccount {
 public class App {
 
   public static void main(String[] args) {
-    BankAccount account = new BankAccount(BankAccount.CurrencyType.EURO, 9001);
-    account.add(BankAccount.CurrencyType.DOLLAR, 100);
-    account.remove(BankAccount.CurrencyType.POUND, 10);
+    BankAccount account = new BankAccount(CurrencyType.EURO, 9001, new CurrencyServiceImpl());
+    account.add(CurrencyType.DOLLAR, 100);
+    account.remove(CurrencyType.POUND, 10);
     System.out.println("Balance: " + account.getAmount());
   }
 }

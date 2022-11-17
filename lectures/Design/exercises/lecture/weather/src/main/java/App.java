@@ -10,7 +10,7 @@ public class App {
     //           You can run this app on the command line with `gradlew.bat run` on Windows or `./gradlew run` on macOS and Linux.
 
     public static void main(String[] args) {
-        new Presenter(new RandomModel(), new ConsoleView()).run();
+        new Presenter(new Retry(new RandomModel()), new ConsoleView()).run();
     }
 }
 
@@ -49,7 +49,24 @@ class RandomModel implements Model {
     }
 }
 
-class ConsoleView implements View{
+class Retry implements Model {
+    private Model model;
+
+    public Retry(Model model) {
+        this.model = model;
+    }
+
+    @Override
+    public Weather getForecast() {
+        Weather weather;
+        do {
+            weather = model.getForecast();
+        } while (weather.equals(Weather.UNKNOWN));
+        return weather;
+    }
+}
+
+class ConsoleView implements View {
 
     @Override
     public void run(Presenter presenter) {

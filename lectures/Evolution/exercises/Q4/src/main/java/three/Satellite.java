@@ -15,22 +15,11 @@ public class Satellite {
         new Beer("CoCo POW!", 0)
     );
 
-    private static final int N = 5;
-
-    // returns the top N most popular beers
-    private static List<Beer> getMostPopularBeers() {
-        List<Beer> allBeers = new ArrayList<>(beers);
-        Collections.sort(allBeers);
-        return allBeers.subList(0, N);
-    }
+    private static final TopNPrinter<Beer> printer = new TopNPrinter<>(5, "====TOP BEERS====");
 
     // prints the top N most popular beers in a nice way
     public static void prettyPrintMostPopularBeers() {
-        List<Beer> topBeers = getMostPopularBeers();
-        System.out.println("====TOP BEERS====");
-        int i = 1;
-        for (Beer b : topBeers)
-            System.out.println(i++ + ") " + b);
+        printer.prettyPrintTopN(beers);
     }
 
     // Other methods like:

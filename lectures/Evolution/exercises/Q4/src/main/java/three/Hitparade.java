@@ -1,8 +1,6 @@
 package three;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class Hitparade {
@@ -19,22 +17,11 @@ public class Hitparade {
         new Song("Gangnam Style", "PSY", 5)
     );
 
-    private static final int N = 3;
-
-    // returns the top N most popular songs
-    private static List<Song> getMostPopularSongs() {
-        List<Song> allSongs = new ArrayList<>(songs);
-        Collections.sort(allSongs);
-        return allSongs.subList(0, N);
-    }
+    private static final TopNPrinter<Song> printer = new TopNPrinter<>(3, "====TOP SONGS====");
 
     // prints the top N most popular songs in a nice way
     public static void prettyPrintMostPopularSongs() {
-        List<Song> topSongs = getMostPopularSongs();
-        System.out.println("====TOP SONGS====");
-        int i = 1;
-        for (Song s : topSongs)
-            System.out.println(i++ + ") " + s);
+        printer.prettyPrintTopN(songs);
     }
 
     // other methods like:

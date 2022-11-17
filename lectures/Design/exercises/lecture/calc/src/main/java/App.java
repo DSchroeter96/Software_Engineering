@@ -41,19 +41,19 @@ public class App {
     }
 
     private static List<Token> parsInput(String input) throws NumberFormatException {
-        return Arrays.stream(input.split(" ")).map(s -> { switch (s) {
-            case "+" : return BinaryOperations.Plus;
-            case "-" : return BinaryOperations.Minus;
-            case "*" : return BinaryOperations.Times;
-            case "/" : return BinaryOperations.Div;
-            default : {
+        return Arrays.stream(input.split(" ")).map(s ->  switch (s) {
+            case "+" -> BinaryOperations.Plus;
+            case "-" -> BinaryOperations.Minus;
+            case "*" -> BinaryOperations.Times;
+            case "/" -> BinaryOperations.Div;
+            default -> {
                 try {
-                    return new IntLitToken(Integer.parseInt(s));
+                    yield new IntLitToken(Integer.parseInt(s));
                 } catch (NumberFormatException e) {
                     throw new InvalidComputationException("Computation invalid");
                 }
             }
-        }}).collect(Collectors.toList());
+        }).collect(Collectors.toList());
     }
 
     private static int performComputation(List<Token> tokens) throws NumberFormatException {
@@ -75,21 +75,11 @@ public class App {
     }
 
     private static Integer executeOp(BinaryOperations op, int a, int b) {
-        int ret = 0;
-        switch (op) {
-            case Plus :
-                ret = a + b;
-                break;
-            case Minus :
-                ret = a - b;
-                break;
-            case Times :
-                ret = a * b;
-                break;
-            case Div :
-                ret = a / b;
-                break;
-        }
-        return ret;
+        return switch (op) {
+            case Plus -> a + b;
+            case Minus -> a - b;
+            case Times -> a * b;
+            case Div -> a / b;
+        };
     }
 }

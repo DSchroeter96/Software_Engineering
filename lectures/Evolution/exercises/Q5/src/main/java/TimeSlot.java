@@ -1,15 +1,6 @@
 import java.time.LocalDateTime;
 
-public class TimeSlot {
-    private int startHour;
-    private int endHour;
-    private String day;
-
-    public TimeSlot(String day, int startHour, int endHour) {
-        this.day = day;
-        this.startHour = startHour;
-        this.endHour = endHour;
-    }
+public record TimeSlot(String day, int startHour, int endHour) {
 
     public static TimeSlot now() {
         LocalDateTime now = LocalDateTime.now();
@@ -21,10 +12,9 @@ public class TimeSlot {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof TimeSlot)) {
+        if (!(other instanceof TimeSlot that)) {
             return false;
         }
-        TimeSlot that = (TimeSlot) other;
         return this.day.equals(that.day) &&
                 this.startHour == that.startHour &&
                 this.endHour == that.endHour;

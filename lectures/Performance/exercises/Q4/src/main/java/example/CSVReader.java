@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntPredicate;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -14,9 +16,11 @@ import java.util.stream.Stream;
 public class CSVReader {
 
     private final Path path;
+    private final Cache<Integer, Student> cache;
 
-    public CSVReader(String fileName) {
+    public CSVReader(String fileName, Cache<Integer, Student> cache) {
         this.path = Paths.get(fileName);
+        this.cache = cache;
     }
 
     /**
@@ -26,11 +30,21 @@ public class CSVReader {
      */
     public List<Student> read(int n) {
         List<Student> result = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            if (cache.contains(i))
+                result.add(cache.get(i));
+        }
+        if (result.size() != n)
+            result.clear();
+        else
+            return result;
+
         try (Stream<String> stream = Files.lines(path)) {
             stream.skip(1).limit(n).forEach(line -> {
                 if (!line.isEmpty()) {
                     String[] values = line.split("\t");
                     Student s = new Student(values[1], values[2], values[3], values[4]);
+                    cache.put(Integer.parseInt(values[0]), s);
                     result.add(s);
                 }
             });

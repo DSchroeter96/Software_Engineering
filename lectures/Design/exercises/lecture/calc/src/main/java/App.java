@@ -59,12 +59,12 @@ public class App {
     private static int performComputation(List<Token> tokens) throws NumberFormatException {
         var stack = new ArrayDeque<Integer>();
         for (Token t: tokens) {
-            if (t instanceof BinaryOperations) {
+            if (t instanceof BinaryOperations t1) {
                 var b = stack.pop();
                 var a = stack.pop();
-                stack.push(executeOp((BinaryOperations) t, a, b));
-            } else if (t instanceof IntLitToken) {
-                stack.push(((IntLitToken) t).nb());
+                stack.push(executeOp(t1, a, b));
+            } else if (t instanceof IntLitToken t2) {
+                stack.push((t2).nb());
             }
         }
         if (stack.size() == 1) {

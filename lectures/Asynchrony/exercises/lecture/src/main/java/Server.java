@@ -12,10 +12,10 @@ public final class Server {
     }
 
     /** Uploads an array of texts to the server (...or pretends to, at least) */
-    public static CompletableFuture<Void> uploadBatch(String[] texts) {
-        // TODO cancel if needed before each step
+    public static CompletableFuture<Void> uploadBatch(String[] texts, AtomicBoolean cancelFlag) {
         return CompletableFuture.supplyAsync(() -> {
             for (String text : texts) {
+                if (cancelFlag.get()) throw new CancellationException();
                 Utils.sleep(500); // each step takes some time
                 System.out.println("Uploaded: " + text);
             }

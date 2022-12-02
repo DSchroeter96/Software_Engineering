@@ -8,21 +8,27 @@ public final class Basics {
 
     /** Prints to `System.out` the weather given by `Weather.today` */
     public static CompletableFuture<Void> printTodaysWeather() {
-        // TODO
-        return CompletableFuture.completedFuture(null);
+        // println is synchronous, so we have to run then Accept, it will directly execute it and return Void.
+        return Weather.today().thenAccept(System.out::println);
     }
 
     /** Uploads using `Server.upload` the weather given by `Weather.today` */
     public static CompletableFuture<Void> uploadTodaysWeather() {
-        // TODO
-        return CompletableFuture.completedFuture(null);
+        return Weather.today().thenCompose(Server::upload);
     }
 
     /** Prints to `System.out` the weather given by either `Weather.today` or `Weather.yesterday`,
         whichever is available first, prefixed by "Today: " and "Yesterday: " respectively */
     public static CompletableFuture<Void> printSomeWeather() {
-        // TODO
-        return CompletableFuture.completedFuture(null);
+        //var today = Weather.today();
+        //var yesterday = Weather.yesterday();
+        //return CompletableFuture.anyOf(today, yesterday).thenAccept(System.out::println);
+        return Weather.today()
+                .thenApply(w -> "Today: " + w)
+                .acceptEither(
+                        Weather.yesterday().thenApply(w -> "Yesterday: " + w),
+                        System.out::println
+                );
     }
 
     /** Prints to `System.out` the weather given by `Weather.all`,
@@ -30,6 +36,10 @@ public final class Basics {
         in which case it prints the weather given by `Weather.today` prefixed with "Today: " */
     public static CompletableFuture<Void> tryPrintAllWeather() {
         // TODO (hint: remember that CompletableFuture's documentation includes methods inherited from CompletionStage)
-        return CompletableFuture.completedFuture(null);
+        return Weather.all()
+                .orTimeout(2, TimeUnit.SECONDS)
+                .exceptionallyCompose(e ->
+                        Weather.today().thenApply(w -> "Today: " + w)
+                ).thenAccept(System.out::println);
     }
 }

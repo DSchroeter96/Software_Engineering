@@ -25,10 +25,10 @@ public final class Weather {
     }
 
     /** Prints the weather for yesterday and today, in some undefined order. */
-    public static void printWeathers() {
-        today().thenApply(a -> "Today: " + a)
-               .thenAccept(System.out::println);
-        yesterday().thenApply(a -> "Yesterday: " + a)
-                   .thenAccept(System.out::println);
+    public static CompletableFuture<Void> printWeathers(Consumer<String> printer) {
+        return CompletableFuture.allOf(
+                today().thenApply(a -> "Today: " + a).thenAccept(printer),
+                yesterday().thenApply(a -> "Yesterday: " + a).thenAccept(printer)
+        );
     }
 }

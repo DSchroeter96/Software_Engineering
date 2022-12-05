@@ -5,7 +5,11 @@ import org.junit.jupiter.api.Test;
 import provider.DocumentNotFoundException;
 import provider.DocumentProvider;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntSupplier;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.concurrent.CompletableFuture.failedFuture;
@@ -107,5 +111,22 @@ public class DocumentServiceTest {
     void getDocumentMultipleNotFoundProvidersThrows() {
         var service = new DocumentService(notFoundProvider(), notFoundProvider());
         assertThrows(DocumentNotFoundException.class, () -> service.getDocument("id"));
+    }
+    @Test
+    public void test() {
+        CompletableFuture<Integer> i = CompletableFuture.failedFuture(new DocumentNotFoundException("id"));
+        CompletableFuture<Integer> i1 = CompletableFuture.completedFuture(1).thenCompose(in -> CompletableFuture.failedFuture(new DocumentNotFoundException("id")));
+
+        try {
+            System.out.println(i.join());
+        } catch (Exception t) {
+            System.out.println(t.getMessage());
+        }
+
+        try {
+            System.out.println(i1.join());
+        } catch (Exception t) {
+            System.out.println(t.getMessage());
+        }
     }
 }

@@ -3,7 +3,10 @@ package service;
 import model.Document;
 import provider.DocumentNotFoundException;
 import provider.DocumentProvider;
+import provider.DocumentProviderMultiProvider;
+import provider.DocumentProviderRetry;
 
+import java.util.List;
 import java.util.concurrent.CompletionException;
 
 /**
@@ -27,7 +30,7 @@ public final class DocumentService {
      */
     public DocumentService(DocumentProvider... providers) {
         // TODO : Handle multiple providers and retries properly ???
-        this.provider = providers[0];
+        this.provider = new DocumentProviderRetry(new DocumentProviderMultiProvider(providers));
     }
 
     /**

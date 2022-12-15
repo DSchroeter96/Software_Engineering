@@ -66,7 +66,7 @@ public class CBDistantCredentialDatabaseTest {
 
         database.addUser("David", "1234", 15, futureUser2);
         var exception = assertThrows(CompletionException.class, () -> futureUser2.orTimeout(5, TimeUnit.SECONDS).join());
-        assertThat(exception.getCause(), isA(AlreadyExistsUserException.class));
+        assertThat(exception.getCause(), isA(UserAlreadyExistsException.class));
     }
 
     @Test

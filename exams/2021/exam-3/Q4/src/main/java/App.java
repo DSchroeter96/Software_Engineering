@@ -1,5 +1,6 @@
 import model.VideoFile;
 import provider.SwengflixProvider;
+import provider.SwengflixProviderCache;
 import provider.VideoFileProvider;
 
 import java.util.concurrent.CompletableFuture;
@@ -13,13 +14,24 @@ public final class App {
 
     public static void main(String[] args) {
         // Simulate what the client does:
-        VideoFileProvider provider = new SwengflixProvider();
+        VideoFileProvider provider = new SwengflixProviderCache(new SwengflixProvider());
 
+        handleFuture(provider.getVideo(2));
+
+        sleep(6_000);
+        handleFuture(provider.getVideo(5));
+        sleep(6_000);
+        handleFuture(provider.getVideo(2));
+        sleep(6_000);
+        handleFuture(provider.getVideo(1));
+
+        sleep(6_000);
         handleFuture(provider.getVideo(2));
 
         // This should complete exceptionally, and complete before the request for 2:
         // No VideoFile with uniqueID 7 exists
-        handleFuture(provider.getVideo(7));
+
+        //handleFuture(provider.getVideo(7));
 
         // Wait, to be sure that the client has received the video(s) what they wanted
         sleep(30_000);
